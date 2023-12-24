@@ -1,4 +1,4 @@
-//a unit for both jump and branch instructions
+//a unit for both jump and branch insts
 
 module branch_checker #(
    parameter REG_SIZE = 32

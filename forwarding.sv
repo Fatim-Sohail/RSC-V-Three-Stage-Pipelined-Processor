@@ -1,5 +1,5 @@
-module forwarding_unit
-   import riscv_pkg::*;
+module forwarding
+   import riscv_package::*;
 (
    // input  logic       clk_i,
    // input  logic       rst_i,
@@ -9,7 +9,7 @@ module forwarding_unit
    input  logic            reg_write_m,
    input  logic            wb_sel_0,      //checks whether the inst was LOAD
    input  logic            br_taken,
-   input  logic            is_mret,      //detection of mret instruction
+   input  logic            is_mret,      //detection of mret inst
 
    output logic            forward_a,     //forward to input A of ALU
    output logic            forward_b,      //forward to input B of ALU
@@ -54,4 +54,4 @@ module forwarding_unit
    end
 /////////////////////////////////////////////////////////////////////////////////
 
-endmodule: forwarding_unit
+endmodule: forwarding

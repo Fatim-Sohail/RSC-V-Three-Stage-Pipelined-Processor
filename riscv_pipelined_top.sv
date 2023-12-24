@@ -1,5 +1,3 @@
-//top file of 3 stage pipelined riscv
-
 module riscv_pipelined_top #(
    parameter  DW                  = 32,
    parameter  REG_SIZE            = 32,
@@ -24,23 +22,17 @@ module riscv_pipelined_top #(
 
    localparam ADDRW_DM = $clog2(NO_OF_REGS);
 
-   //uart localparams
-   localparam DW_UART          = 8;
-   localparam CLOCK_FREQ       = 100e6;
-   localparam BAUD_RATE        = 9600;
-   localparam BITS_TO_COUNT    = 8;
-
    logic [DW-1:0] pc_next;
    logic [DW-1:0] pc;
    logic [DW-1:0] inst_o;
 
    logic [6:0] opcode_f;
    logic [6:0] opcode_m;
-   assign opcode_f = inst_o[6:0];   //declaration and assignment on the same line is prohibited
+   assign opcode_f = inst_o[6:0];    
    
    logic [DW-1:0] instr_d;
    logic [6:0] opcode_d;
-   assign opcode_d = instr_d[6:0];   //declaration and assignment on the same line is prohibited
+   assign opcode_d = instr_d[6:0];    
 
    
    logic [2:0] func3;
@@ -52,7 +44,7 @@ module riscv_pipelined_top #(
    logic [DW-1:0] rdata1;
    logic [DW-1:0] rdata2;
    logic [DW-1:0] alu_result;
-   logic [DW-1:0] scr_b;              //signal to support I-type
+   logic [DW-1:0] scr_b;             
 
    //control signals
    logic          reg_write;
@@ -151,8 +143,8 @@ module riscv_pipelined_top #(
    logic [3:0] mask_dm;
 
    logic [ADDRW_DM-1:0] addr_dm;
-   logic [DW-1:0]       data_l_pb_o;  //data load from data memory and output of peripheral bus (pb) input to lsu
-   logic [DW-1:0]       data_s_pb_o;  //data to be stored at data memory and output of peripheral bus (pb) input to lsu
+   logic [DW-1:0]       data_l_pb_o;  
+   logic [DW-1:0]       data_s_pb_o;  
 
    //peripheral (uart) signals
    logic      Tx;
@@ -208,8 +200,8 @@ pipeline_reg_1 #(
    
    .stall        (stall_fd   ),
    .flush        (flush || flush_intr     ),
-   .instr_f      (inst_o     ),   //instruction in fetch stage
-   .instr_d      (instr_d    ),   //instruction in decode stage
+   .instr_f      (inst_o     ),   //inst in fetch stage
+   .instr_d      (instr_d    ),   //inst in decode stage
 
    .pc_f         (pc         ),   //PC in fetch stage
    .pc_d         (pc_d       ),   //PC in decode stage
@@ -490,11 +482,11 @@ lsu #(
    .mask     (mask          )
 );
 
-peripherals_bus #(
+peripherals #(
    .DW            (DW            ),
    .MEM_SIZE_IN_KB(MEM_SIZE_IN_KB)
 
-) i_peripherals_bus(
+) i_peripherals(
    .data_load_i (rdata_data_mem),
    .data_load_o (data_l_pb_o   ),
 
@@ -511,32 +503,6 @@ peripherals_bus #(
    .cs_uart     (cs_uart       )
 );
 
-uart_tx #(
-   .DW           (DW_UART      ),
-   .CLOCK        (CLOCK_FREQ   ),
-   .BAUD_RATE    (BAUD_RATE    ),
-   .BITS_TO_COUNT(BITS_TO_COUNT)
-
-) i_uart_tx(
-   .clk_i       (clk_i                   ),
-   .rst_i       (rst_i                   ),
-   .cs          (cs_uart_d               ),
-   .data_i      (data_s_pb_o[DW_UART-1:0]),
-   .byte_ready_i(byte_ready_uart         ),
-   .t_byte_i    (t_byte_uart             ),
-   .Tx          (Tx                      ),
-   .done_uart   (done_uart               )
-);
-
-uart_riscv_contr i_uart_riscv_contr(
-   .cs_uart   (cs_uart        ),
-   .done_uart (done_uart      ),
-   .byte_ready(byte_ready_uart),
-   .t_byte    (t_byte_uart    )
-);
-
-logic [DW-1:0] dm_reg_0;   //register mapped to 7 segments display
-
 data_mem #(
    .DW             (DW            ),
    .MEM_SIZE_IN_KB (MEM_SIZE_IN_KB)
@@ -548,11 +514,10 @@ data_mem #(
    .mask           (mask_dm       ),
    .addr_i         (addr_dm       ),
    .wdata_i        (data_s_pb_o   ),
-   .rdata_o        (rdata_data_mem),
-   .dm_reg_0       (dm_reg_0      )
+   .rdata_o        (rdata_data_mem)
 );
 
-logic [2:0] csr_cntr;   //for all type of CSR instructions
+logic [2:0] csr_cntr;   //for all type of CSR inst
 
 csr_decoder #(
    .DW   (DW   ),
@@ -608,8 +573,8 @@ mux_4x1 #(
    .out  (data_wb    )            //forwarding will be taken from here
 );
 
-forwarding_unit
-i_forwarding_unit(
+forwarding
+i_forwarding(
    .rs1_e      (instr_d[19:15]),
    .rs2_e      (instr_d[24:20]),
    .rd_m       (instr_m[11:7] ),
@@ -640,30 +605,7 @@ main_decoder i_main_decoder(
    .is_mret   (is_mret  )
 );
 
-ssd #(
-   .DW        (DW        )
-) i_ssd(
-   .clk    (clk_fpga),
-   .rst_i  (rst_i   ),
-   .data_i (dm_reg_0),
-   .anode  (anode   ), 
-   .display(display )
-);
 
-   // always_ff @ (posedge clk_i) begin
-   //    //t_intr_d and e_intr_d are given to pc mux to select pc appropriately when interrupt comes
-   //    // if configured
-   //    if (intr) begin
-   //       t_intr_d <= t_intr;
-   //       e_intr_d <= e_intr;
-   //    end
-
-   //    //interrupt signal should not be generated if it is not configured
-   //    else begin
-   //       t_intr_d <= 0;
-   //       e_intr_d <= 0;
-   //    end
-   // end
 
    always_ff @ (posedge clk_i) begin
       t_intr_d <= t_intr;

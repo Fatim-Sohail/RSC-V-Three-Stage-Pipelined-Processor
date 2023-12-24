@@ -1,6 +1,4 @@
-//this is the module by which all peripherals will be connected
-
-module peripherals_bus #(
+module peripherals #(
     parameter  DW             = 32,
     parameter  MEM_SIZE_IN_KB = 1,                           //size of the data memory in kBs
     localparam NO_OF_REGS     = MEM_SIZE_IN_KB * 1024 / 4,   //4 bytes in 32 bits

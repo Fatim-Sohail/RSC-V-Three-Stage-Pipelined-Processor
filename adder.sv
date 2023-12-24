@@ -1,4 +1,4 @@
-//adder will be used for PC+4 to access next instruction
+//adder will be used for PC+4 to access next inst
 //it can be used for other purposes as well
 
 module adder #(

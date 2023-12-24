@@ -6,8 +6,8 @@ module pipeline_reg_1 #(
    
    input  logic stall,
    input  logic flush,
-   input  logic [DW-1:0] instr_f,      //instruction in fetch stage
-   output logic [DW-1:0] instr_d,      //instruction in decode stage
+   input  logic [DW-1:0] instr_f,      //inst in fetch stage
+   output logic [DW-1:0] instr_d,      //inst in decode stage
 
    input  logic [DW-1:0] pc_f,         //PC in fetch stage
    output logic [DW-1:0] pc_d,         //PC in decode stage

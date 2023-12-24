@@ -1,8 +1,7 @@
-//data memory for the processor
-//this is word addressible
+//word addressible
 module data_mem #(
    parameter  DW             = 32,
-   parameter  MEM_SIZE_IN_KB = 1,   //size of the instruction memory
+   parameter  MEM_SIZE_IN_KB = 1,   //size of the inst memory
    localparam NO_OF_REGS     = MEM_SIZE_IN_KB * 1024 / 4,    //4 bytes in 32 bits
    localparam ADDRW          = $clog2(NO_OF_REGS)
 )(
@@ -13,8 +12,7 @@ module data_mem #(
    input  logic [3:0]          mask,
    input  logic [ADDRW-1:0]    addr_i,
    input  logic [DW-1:0]       wdata_i,
-   output logic [DW-1:0]       rdata_o,
-   output logic [DW-1:0]       dm_reg_0      //this register is used to print data on 7 segments
+   output logic [DW-1:0]       rdata_o
 );
 
    logic [DW-1:0] data_mem [0:NO_OF_REGS-1];
@@ -42,5 +40,4 @@ module data_mem #(
       end
    end
 
-   assign dm_reg_0 = data_mem[0];
 endmodule

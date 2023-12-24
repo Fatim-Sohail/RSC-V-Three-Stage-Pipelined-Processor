@@ -3,7 +3,7 @@
 module main_decoder # (
    parameter DW = 32
 )(
-   input  logic [DW-1:0] inst,   //instruction input to main_decoder
+   input  logic [DW-1:0] inst,   //inst input to main_decoder
    
    output logic          reg_write,
    output logic          mem_write,
@@ -144,7 +144,7 @@ always_comb begin
          is_mret   = 1'b0;
       end
 
-      7'b1110011: begin    //CSRRW, CSRRWI and MRET instruction
+      7'b1110011: begin    //CSRRW, CSRRWI and MRET inst
          reg_write = 1'b1;
          mem_write = 1'b0;
          imm_src   = 3'b101;
@@ -166,7 +166,7 @@ always_comb begin
          end
       end
 
-      // 7'b1110011: begin       //csrrw instruction
+      // 7'b1110011: begin       //csrrw inst
       //    reg_write = 1'b1;
       //    mem_write = 1'b0;
       //    imm_src   = 3'b101;

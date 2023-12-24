@@ -23,7 +23,7 @@ module reg_file #(
    //packed array cannot be seen in waveforms
    logic [REG_SIZE-1:0] reg_file [0:NO_OF_REGS-1];
    
-   // initial begin  //this block is just for the testing of R-type instructions
+   // initial begin  //this block is just for the testing of R-type insts
    //    $readmemh("./reg_file.txt", reg_file);
    // end
 

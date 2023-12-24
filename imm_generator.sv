@@ -3,7 +3,7 @@
 module imm_generator #(
    parameter DW = 32
 )(
-   input  logic [DW-1:0] inst,        //instruction input to this unit
+   input  logic [DW-1:0] inst,        //inst input to this unit
    input  logic [2:0]    s,
    output logic [DW-1:0] imm_ext      //output (extended input to 32-bits)
 );

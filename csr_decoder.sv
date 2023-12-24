@@ -8,7 +8,7 @@ module csr_decoder #(
    input  logic [6:0] opcode,
    input  logic [2:0] func3,
 
-   output logic [2:0] csr_cntr  //number of CSR instructions are 6
+   output logic [2:0] csr_cntr  //number of CSR insts are 6
 );
 
    typedef enum logic [2:0] {

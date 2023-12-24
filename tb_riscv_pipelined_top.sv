@@ -51,7 +51,7 @@ riscv_pipelined_top #(
 
    task reset();
                         rst_i <=    0;
-      @(posedge clk_i); rst_i <= #1 1;   //#4, because we do want instruction to come if there is reset
+      @(posedge clk_i); rst_i <= #1 1;   
                     #7; rst_i <= #1 0;
    endtask
 
@@ -59,19 +59,15 @@ riscv_pipelined_top #(
       repeat(100) begin
          $display("PC = %3d, Instr = %8h, forward_a = %0b, forward_b = %0b, reg_write = %0b", i_riscv_pipelined_top.pc_d, i_riscv_pipelined_top.instr_d, i_riscv_pipelined_top.forward_a, i_riscv_pipelined_top.forward_b, i_riscv_pipelined_top.reg_write_m);
          $display("Stall_FD = %0b, Stall_MW = %0b", i_riscv_pipelined_top.stall_fd, i_riscv_pipelined_top.stall_mw);
-         $display("Instruction: %8h, asm: %s\n\n", i_riscv_pipelined_top.instr_d, print(i_riscv_pipelined_top.instr_d));
+         $display("inst: %8h, asm: %s\n\n", i_riscv_pipelined_top.instr_d, print(i_riscv_pipelined_top.instr_d));
          @(posedge clk_i);
       end
    end
 
    initial begin
-      $dumpfile("docs//dump.vcd");
-      $dumpvars;
-   end
-   initial begin
       e_intr = 0;
       t_intr = 0;
-      repeat(20) @(posedge clk_i); //give interrupt after register are configured
+      repeat(20) @(posedge clk_i); 
       t_intr = 1; //1
       
       repeat(2) @(posedge clk_i);
@@ -81,38 +77,13 @@ riscv_pipelined_top #(
       @(posedge clk_i);
       e_intr = 0;
 
-
-      #5000;
-      //seeing the contents of register file
-      $display("=============== Register file is: ===============");
-      for (int i=0; i<32; i++) begin
-         $display("x%2d = 0x%8h", i, i_riscv_pipelined_top.i_reg_file.reg_file[i]);
-      end
-
-      // #200;
-      //seeing the contents of data memory
-      $display("\n\n=============== Data memory is: ===============");
-      for (int i=0; i<21; i++) begin
-         $display("x%2d = 0x%8h", i, i_riscv_pipelined_top.i_data_mem.data_mem[i]);
-      end
-
-      //seeing the contents of csr register file
-      $display("\n\n=============== CSR memory is: ===============");
-      
-      $display("mstatus = 0x%8h", i_riscv_pipelined_top.i_csr_regs.mstatus_ff);
-      $display("mie     = 0x%8h", i_riscv_pipelined_top.i_csr_regs.mie_ff);
-      $display("mtvec   = 0x%8h", i_riscv_pipelined_top.i_csr_regs.mtvec_ff);
-      $display("mepc    = 0x%8h", i_riscv_pipelined_top.i_csr_regs.mepc_ff);
-      $display("mcause  = 0x%8h", i_riscv_pipelined_top.i_csr_regs.mcause_ff);
-      $display("mip     = 0x%8h", i_riscv_pipelined_top.i_csr_regs.mip_ff);
-
       #30;
       $finish;
    end
 
-   function string print(logic [DW-1:0] instruction);
+   function string print(logic [DW-1:0] inst);
       string as;
-      case(instruction)
+      case(inst)
          32'h00400193: as = "addi x3, x0, 4";
          32'h0801c463: as = "blt x3, x0, 136";
          32'h00000033: as = "add x0, x0, x0";
