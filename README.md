@@ -32,7 +32,7 @@ The top modules include:
   
 #### Diagram
 
-![RISC-V 3 Stage Pipelined](RISC-V 3 Stage Pipelined.jpg)
+[RISC-V 3 Stage Pipelined](RISC-V 3 Stage Pipelined.jpg)
 
 #### Compilation and Running
 
